@@ -2,6 +2,7 @@
  
 import 'dart:convert';
 
+import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -91,13 +92,12 @@ class _Merek extends State<Merek>{
     
     return Column(
       children: [
- 
+
         ListTile(
           contentPadding: const EdgeInsets.only(left: 0, right: 0),
           title: Text('Merek', style: Css.labelHarga,),
-            subtitle :  DropdownButtonFormField<String>(
-              menuMaxHeight: Get.height/2,    
-              decoration: const InputDecoration(    
+          subtitle: EasyAutocomplete(
+            decoration: const InputDecoration(    
               contentPadding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
               focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
               enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
@@ -106,29 +106,21 @@ class _Merek extends State<Merek>{
                 gapPadding: 0,
               ), 
             ),
-            dropdownColor: Colors.blueGrey, 
-            style: const TextStyle(
-              color: Colors.white,  
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1
-            ),   
-              hint: const Text('-- Pilih Merek -- '),   
-              onChanged: (String? v) {   
+            suggestions:  widget.listMerek,
+            onChanged: (value) => print('onChanged value: $value'),  
+            onSubmitted: (v){   
                 setState(() =>  carTypes = [] );
                 print('Merek :  $v');   
-                priceController.setBrand('$v');
+                priceController.setBrand(v);
                 priceController.set_kacaDepan([]);
                 priceController.set_kacaBelakang([]);
                 priceController.set_kacaSamping([]);
                 priceController.set_kacaSunroof([]);
-                _getTipe(v!);
+                _getTipe(v);
               }, 
-              items: widget.listMerek.map<DropdownMenuItem<String>>((String value){
-                return DropdownMenuItem<String>( value: value, child: Text(value), ); 
-              }).toList(), 
-          ),             
-        ), 
-
+          ),
+        ),
+         
         ListTile(
           contentPadding: const EdgeInsets.only(left: 0, right: 0),
           title: Text('Tipe', style: Css.labelHarga,),

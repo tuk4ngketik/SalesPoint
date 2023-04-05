@@ -2,7 +2,7 @@
 
 // import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'dart:convert';
-
+ 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -109,7 +109,7 @@ class _Harga extends State<Harga>{
             padding: const EdgeInsets.all(10.0),
             child: ListView(
               padding: const EdgeInsets.all (20),
-              children : [
+              children : [        
                 
                 // Merek n Tipe
                 Merek(listMerek: mereks), 
