@@ -9,6 +9,8 @@ class Svr{
   String host = 'https://sistemgaransi.com/site/api'; 
 
   String daftar() => '$host/daftar.php';
+
+  String dealerPartisipan ()=> '$host/dealer_partisipasi.php'; // daftar
   
   String login() => '$host/login.php';
 
