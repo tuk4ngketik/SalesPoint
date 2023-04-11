@@ -35,6 +35,8 @@ class MDealerPartisipasi {
 class Datum {
     Datum({
         this.serial,
+        this.companySerial,
+        this.branchCode,
         this.branchName,
         this.kota,
         this.status,
@@ -42,6 +44,8 @@ class Datum {
     });
 
     String? serial;
+    String? companySerial;
+    String? branchCode;
     String? branchName;
     String? kota;
     String? status;
@@ -49,6 +53,8 @@ class Datum {
 
     factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         serial: json["serial"],
+        companySerial: json["company_serial"],
+        branchCode: json["branch_code"],
         branchName: json["branch_name"],
         kota: json["kota"],
         status: json["status"],
@@ -57,6 +63,8 @@ class Datum {
 
     Map<String, dynamic> toJson() => {
         "serial": serial,
+        "company_serial": companySerial,
+        "branch_code": branchCode,
         "branch_name": branchName,
         "kota": kota,
         "status": status,
