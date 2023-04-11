@@ -1,9 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print, annotate_overrides, unused_field, non_constant_identifier_names
+// ignore_for_file: library_private_types_in_public_api, avoid_print, annotate_overrides, unused_field, non_constant_identifier_names, unused_element
 
 // import 'dart:convert';
 
 import 'dart:convert';
-
+import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart'; 
@@ -12,7 +12,6 @@ import 'package:sales_point/Helper/rgx.dart';
 import 'package:sales_point/Helper/tanggal.dart';
 import 'package:sales_point/Views/daftar-sukses.dart'; 
 import 'package:sales_point/dondrawer.dart'; 
-
 import '../Cfg/css.dart';
 import '../Helper/wg.dart';
 
@@ -27,34 +26,32 @@ class _Daftar extends State<Daftar>{
   Tanggal tgl = Tanggal();
 
   ApiLogin apiLogin = ApiLogin();
+  String? msgAPiDealerpartisipasi;
 
   bool visiblePass =  false;
   bool isLoad =  false; 
   final _formKey = GlobalKey<FormState>();
-  String? appVersion, _email, _passwd, _passwdKonfirm, 
+  String? _email, _passwd, _passwdKonfirm, 
           nama_depan, nama_belakang, no_ktp, no_hp;
   final passwd_ = TextEditingController();
   
-  // ignore: prefer_final_fields
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
     packageName: 'Unknown',
     version: 'Unknown',
     buildNumber: 'Unknown',
-    buildSignature: 'Unknown', 
   );
 
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
     setState(() =>  _packageInfo = info ); 
+    _getDealer();
   }
   
   void initState() { 
     super.initState();
     _initPackageInfo(); 
-    setState(() {
-      appVersion =  _packageInfo.version;
-    });
+    // _getDealer();
   }
  
   void dispose() {
@@ -77,7 +74,7 @@ class _Daftar extends State<Daftar>{
         ),
 
         child: Center( 
-          child: ListView( 
+          child: (msgAPiDealerpartisipasi == null) ? const CircularProgressIndicator() : ListView( 
             children: [
 
               // Image.asset('images/v-kool_logo.png', height: 60,), 
@@ -100,7 +97,32 @@ class _Daftar extends State<Daftar>{
                         br(20),
                         const Text('Daftar', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),  
                         br(20),
-                        
+
+                        //Dealer
+                        EasyAutocomplete(    
+                          decoration:   const InputDecoration(   
+                            labelText: 'Dealer', 
+                            contentPadding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
+                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
+                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
+                            border: OutlineInputBorder( 
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              gapPadding: 0,
+                            ), 
+                          ),
+                          suggestions:  listBranchname,
+                          suggestionBuilder: (data) {
+                            return ListTile(
+                              title: Text(data),
+                              subtitle: Text('${mapBranch[data]}'),
+                            );
+                          },
+                          onChanged: (value)  => print('onchange $value'),
+                          onSubmitted: (v){   
+                              print('onSubmitted :  $v');    
+                            }, 
+                        ),
+                        br(12),
                         // NAma Depan
                         TextFormField( 
                            decoration:  InputDecoration(       
@@ -256,8 +278,9 @@ class _Daftar extends State<Daftar>{
                             hintText: ' - - -',  
                            ),
                         ),
-                        br(20),
-                                  
+ 
+                        
+                        br(20), 
                         Container(
                           // color: Colors.yellow,
                             decoration: const BoxDecoration(
@@ -289,7 +312,6 @@ class _Daftar extends State<Daftar>{
                 ),        
                 ),
               ),
-
 
             ],
           ),
@@ -340,12 +362,49 @@ class _Daftar extends State<Daftar>{
           defaultDialogErr(msg!);
           setState(() { isLoad = false; }); 
           return;
-        }  
-        
+        }          
           print('Next Ok');
           Get.off(() => const DaftarSukses());
 
     });  
+  }
+
+  List<String> listBranchname = [];
+  Map<String, String> mapBranch = {};
+
+  Future<void> _getDealer()async {
+    String pckDate = base64.encode(utf8.encode( tgl.dmy() )); 
+    String pckName = base64.encode(utf8.encode( _packageInfo.packageName));   
+    
+    var headers = {
+      'pckname': pckName,
+      'pckdate': pckDate,
+      'appversion':  _packageInfo.version, 
+      'targetpath': 'c2lzdGVtZ2FyYW5zaS5jb20vc2l0ZS9hcGk=',
+      'apikey': 'aUtvb2wtU2FsZXMtUG9pbnQ',  
+      'Content-Type': 'application/json'
+    };
+
+    apiLogin.dealerPartisipan(headers).then((value){
+      
+      bool? stat = value!.status;
+      if(stat == false){
+        return;
+      } 
+
+
+      for (var element in value.data!) {
+        print('element  ${element.branchName}');
+        setState(() {
+          listBranchname.add('${element.branchName}');
+          mapBranch['${element.branchName}'] = '${element.kota}' ;
+        });
+      }
+
+      setState(() => msgAPiDealerpartisipasi = value.message );
+
+    });
+
   }
 
 }
