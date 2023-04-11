@@ -126,7 +126,7 @@ class _Daftar extends State<Daftar>{
                         // NAma Depan
                         TextFormField( 
                            decoration:  InputDecoration(       
-                            labelText: 'Nama depan',
+                            labelText: 'Nama Lengkap',
                             // hintText: 'Nama Depan',    
                             border: Css.round20,      
                             prefixIcon: const Icon(Icons.person, color: Colors.black),
@@ -135,32 +135,31 @@ class _Daftar extends State<Daftar>{
                           onSaved:(newValue) => nama_depan = newValue,
                           validator: (value) { 
                             if(value!.isEmpty){
-                              return 'Lengkapi Nama depan';
+                              return 'Lengkapi kolom Nama';
                             }
-                            if( alphabetOnly(value) == false){
+                            if( namaLengkap(value) == false){
                               return 'Nama depan harus Alfabet';
                             }
                             return null;
                           },
                         ),
-                        br(12),
-                        // Nama Belakang
-                        TextFormField( 
-                           decoration:  InputDecoration(       
-                            labelText: 'Nama belakang',
-                            // hintText: 'Nama Depan',    
-                            border: Css.round20,      
-                            // prefixIcon: const Icon(Icons.person, color: Colors.black),
-                            labelStyle: Css.labelStyle,
-                           ), 
-                          onSaved:(newValue) => nama_belakang = newValue,
-                          validator: (value) { 
-                            if( alphabetOnly(value) == false){
-                              return 'Nama belakang harus Alfabet';
-                            }
-                            return null;
-                          },
-                        ),
+                        // br(12), // Nama Belakang
+                          // TextFormField( 
+                          //    decoration:  InputDecoration(       
+                          //     labelText: 'Nama belakang',
+                          //     // hintText: 'Nama Depan',    
+                          //     border: Css.round20,      
+                          //     // prefixIcon: const Icon(Icons.person, color: Colors.black),
+                          //     labelStyle: Css.labelStyle,
+                          //    ), 
+                          //   onSaved:(newValue) => nama_belakang = newValue,
+                          //   validator: (value) { 
+                          //     if( alphabetOnly(value) == false){
+                          //       return 'Nama belakang harus Alfabet';
+                          //     }
+                          //     return null;
+                          //   },
+                        // ),
                         br(12),
                         // No KTP
                         TextFormField( 
