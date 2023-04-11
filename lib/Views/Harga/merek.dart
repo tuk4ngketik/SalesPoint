@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print, unused_element, avoid_function_literals_in_foreach_calls, prefer_typing_uninitialized_variables, non_constant_identifier_names
+// ignore_for_file: library_private_types_in_public_api, avoid_print, unused_element, avoid_function_literals_in_foreach_calls, prefer_typing_uninitialized_variables, non_constant_identifier_names, avoid_returning_null_for_void
  
 import 'dart:convert';
 
@@ -18,8 +18,7 @@ class Merek extends StatefulWidget{
   final List<String> listMerek; 
   const Merek({super.key,  required this.listMerek});
   @override
-  _Merek createState() => _Merek();
-  
+  _Merek createState() => _Merek();  
 } 
 
 class _Merek extends State<Merek>{ 
@@ -87,6 +86,13 @@ class _Merek extends State<Merek>{
     });
   }
 
+  final _merek = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _merek.dispose();
+  }
   @override
   Widget build(BuildContext context){ 
     
@@ -96,27 +102,34 @@ class _Merek extends State<Merek>{
         ListTile(
           contentPadding: const EdgeInsets.only(left: 0, right: 0),
           title: Text('Merek', style: Css.labelHarga,),
-          subtitle: EasyAutocomplete(
-            decoration: const InputDecoration(    
-              contentPadding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
-              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
-              border: OutlineInputBorder( 
+          subtitle: EasyAutocomplete(  
+            controller: _merek,
+            decoration:   InputDecoration(   
+              suffixIcon:  ( _merek.text.isNotEmpty )  ? IconButton(
+                onPressed: (){ 
+                  _clearKaca();
+                  _merek.clear();  
+                },
+                icon: const Icon(Icons.close),
+              ) : null,   
+              contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
+              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
+              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
+              border: const OutlineInputBorder( 
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 gapPadding: 0,
               ), 
             ),
             suggestions:  widget.listMerek,
-            onChanged: (value) => print('onChanged value: $value'),  
-            onSubmitted: (v){   
-                setState(() =>  carTypes = [] );
-                print('Merek :  $v');   
-                priceController.setBrand(v);
-                priceController.set_kacaDepan([]);
-                priceController.set_kacaBelakang([]);
-                priceController.set_kacaSamping([]);
-                priceController.set_kacaSunroof([]);
+            onChanged: (value)  {  
+              _clearKaca() ;
+            },  
+            onSubmitted: (v){    
+                _clearKaca();
+                priceController.setBrand(v); 
                 _getTipe(v);
+                print('Merek :  $v');   
+                _merek.text = v;
               }, 
           ),
         ),
@@ -132,4 +145,14 @@ class _Merek extends State<Merek>{
     );
 
   } 
+
+  void _clearKaca(){
+    setState(() =>  carTypes = [] );
+    priceController.set_kacaDepan([]);
+    priceController.set_kacaBelakang([]);
+    priceController.set_kacaSamping([]);
+    priceController.set_kacaSunroof([]);
+    priceController.clear_subTotal(); 
+  }
+
 }//End

@@ -2,6 +2,7 @@
  
 import 'dart:convert';
 
+import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -56,7 +57,14 @@ class _CarType extends State<CarType>{
     super.initState(); 
     _initPackageInfo();
   }
+
+  void dispose(){
+    super.dispose();
+    _type.dispose();
+  }
   
+  final _type = TextEditingController();
+
   List<String> kacaDepan = [];
   List<String> kacaBelakang = [];
   List<String> kacaSamping = [];
@@ -64,45 +72,80 @@ class _CarType extends State<CarType>{
 
   @override
   Widget build(BuildContext context){ 
-      return DropdownButtonFormField<String>(  
-              menuMaxHeight: Get.height/2,    
-              decoration: const InputDecoration(    
-              contentPadding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
-              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
-              border: OutlineInputBorder( 
+
+      // return DropdownButtonFormField<String>(  
+      //         menuMaxHeight: Get.height/2,    
+      //         decoration: const InputDecoration(    
+      //         contentPadding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
+      //         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
+      //         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
+      //         border: OutlineInputBorder( 
+      //           borderRadius: BorderRadius.all(Radius.circular(10)),
+      //           gapPadding: 0,
+      //         ), 
+      //       ),
+      //       dropdownColor: Colors.blueGrey, 
+      //       style: const TextStyle(
+      //         color: Colors.white,  
+      //         fontWeight: FontWeight.bold,
+      //         letterSpacing: 1
+      //       ),   
+      //     hint: const Text('-- Pilih Tipe -- '),     
+      //     onChanged: (String? v) {  
+      //           // Clear Harga Kaca
+      //           _clearKaca();
+
+      //           // Set tipe
+      //             priceController.setTipe('$v');
+      //             print('Brand : ${priceController.brand} :: Tipe :  $v');   
+
+      //           // Set List Harga
+      //             _hargaByPosisi( 'Depan' );
+      //             _hargaByPosisi( 'Belakang' );
+      //             _hargaByPosisi( 'Samping' ); 
+      //             _hargaByPosisi( 'Sun Roof' );
+      //     }, 
+      //     items: widget.listTipe.map<DropdownMenuItem<String>>((String value){
+      //       return DropdownMenuItem<String>( value: value, child: Text(value), ); 
+      //     }).toList(), 
+      // ); 
+      return EasyAutocomplete(  
+            controller: _type,
+            decoration:   InputDecoration(   
+              suffixIcon:  ( _type.text.isNotEmpty)  ? IconButton(
+                onPressed: (){ 
+                  _clearKaca();
+                  _type.clear();  
+                },
+                icon: const Icon(Icons.close),
+              ) : null,   
+              contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
+              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
+              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
+              border: const OutlineInputBorder( 
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 gapPadding: 0,
               ), 
             ),
-            dropdownColor: Colors.blueGrey, 
-            style: const TextStyle(
-              color: Colors.white,  
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1
-            ),   
-          hint: const Text('-- Pilih Tipe -- '),     
-          onChanged: (String? v) {  
-                // Clear Harga Kaca
-                  priceController.set_kacaDepan([]);
-                  priceController.set_kacaBelakang([]);
-                  priceController.set_kacaSamping([]);
-                  priceController.set_kacaSunroof([]);
-
+            suggestions:  widget.listTipe,
+            onChanged: (value)  {
+              _clearKaca() ; 
+            },  
+            onSubmitted: (v){    
+                _clearKaca();
                 // Set tipe
-                  priceController.setTipe('$v');
-                  // print('Brand : ${priceController.brand} :: Tipe :  $v');   
+                priceController.setTipe(v);
+                print('Brand : ${priceController.brand} :: Tipe :  $v');   
 
                 // Set List Harga
-                  _hargaByPosisi( 'Depan' );
-                  _hargaByPosisi( 'Belakang' );
-                  _hargaByPosisi( 'Samping' ); 
-                  _hargaByPosisi( 'Sun Roof' );
-          }, 
-          items: widget.listTipe.map<DropdownMenuItem<String>>((String value){
-            return DropdownMenuItem<String>( value: value, child: Text(value), ); 
-          }).toList(), 
-      ); 
+                _hargaByPosisi( 'Depan' );
+                _hargaByPosisi( 'Belakang' );
+                _hargaByPosisi( 'Samping' ); 
+                _hargaByPosisi( 'Sun Roof' );
+                _type.text = v;
+            }, 
+          );
+
   }  
 
   _hargaByPosisi(String posisi ){
@@ -146,4 +189,12 @@ class _CarType extends State<CarType>{
     }); 
   }
   
+  void _clearKaca(){ 
+    priceController.set_kacaDepan([]);
+    priceController.set_kacaBelakang([]);
+    priceController.set_kacaSamping([]);
+    priceController.set_kacaSunroof([]); 
+    priceController.clear_subTotal();
+  }
+
 }//End
