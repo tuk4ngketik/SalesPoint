@@ -142,24 +142,7 @@ class _Daftar extends State<Daftar>{
                             }
                             return null;
                           },
-                        ),
-                        // br(12), // Nama Belakang
-                          // TextFormField( 
-                          //    decoration:  InputDecoration(       
-                          //     labelText: 'Nama belakang',
-                          //     // hintText: 'Nama Depan',    
-                          //     border: Css.round20,      
-                          //     // prefixIcon: const Icon(Icons.person, color: Colors.black),
-                          //     labelStyle: Css.labelStyle,
-                          //    ), 
-                          //   onSaved:(newValue) => nama_belakang = newValue,
-                          //   validator: (value) { 
-                          //     if( alphabetOnly(value) == false){
-                          //       return 'Nama belakang harus Alfabet';
-                          //     }
-                          //     return null;
-                          //   },
-                        // ),
+                        ), 
                         br(12),
                         // No KTP
                         TextFormField( 
