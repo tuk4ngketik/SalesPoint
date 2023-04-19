@@ -101,7 +101,7 @@ class _Merek extends State<Merek>{
 
         ListTile(
           contentPadding: const EdgeInsets.only(left: 0, right: 0),
-          title: Text('Merek', style: Css.labelHarga,),
+          title: Text('Merk', style: Css.labelHarga,),
           subtitle: EasyAutocomplete(  
             controller: _merek,
             decoration:   InputDecoration(   
@@ -113,8 +113,8 @@ class _Merek extends State<Merek>{
                 icon: const Icon(Icons.close),
               ) : null,   
               contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
-              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
+              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
+              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
               border: const OutlineInputBorder( 
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 gapPadding: 0,

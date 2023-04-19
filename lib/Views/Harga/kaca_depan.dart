@@ -55,16 +55,18 @@ class _KacaDepan extends State<KacaDepan>{
               menuMaxHeight: Get.height/2,    
               decoration: const InputDecoration(    
               contentPadding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
-              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
+              // focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
+              // enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
+              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
+              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
               border: OutlineInputBorder( 
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 gapPadding: 0,
               ), 
             ),
-            dropdownColor: Colors.blueGrey, 
+            dropdownColor: Colors.white, 
             style: const TextStyle(
-              color: Colors.white,  
+              color: Colors.black,  
               fontWeight: FontWeight.bold,
               letterSpacing: 1
             ), 

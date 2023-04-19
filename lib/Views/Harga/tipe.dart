@@ -120,8 +120,8 @@ class _CarType extends State<CarType>{
                 icon: const Icon(Icons.close),
               ) : null,   
               contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
-              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
+              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
+              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
               border: const OutlineInputBorder( 
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 gapPadding: 0,
