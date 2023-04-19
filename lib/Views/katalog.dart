@@ -19,10 +19,10 @@ class _Katalog extends State<Katalog>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.grey,
+      // backgroundColor: Colors.grey,
       appBar: AppBar(
         // backgroundColor: Colors.black87,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.amber,
         toolbarHeight: 200,
         shape: Css.roundBottomAppbar, 
         // title: const Text('Katalog', style: TextStyle(color: Colors.yellow),),
@@ -31,7 +31,7 @@ class _Katalog extends State<Katalog>{
             // Text('Katalog', style: TextStyle(color: Colors.yellow),),
             Icon(Icons.shopping_bag, color: Colors.white, size: 120,),
             // Text('Katalog', style: TextStyle(color: Color.fromARGB(255, 161, 126, 18)),),
-            Text('Katalog', style: TextStyle(color: Colors.amber)),
+            Text('Katalog', style: TextStyle(color: Colors.white)),
           ],
         ),
         centerTitle: true,

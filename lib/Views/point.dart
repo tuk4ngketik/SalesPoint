@@ -19,11 +19,11 @@ class _Point extends State<Point>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.grey,
+      // backgroundColor: Colors.grey,
       appBar: AppBar(
         // backgroundColor: Colors.black87,
-        backgroundColor: Colors.black,
-        toolbarHeight: 200,
+        backgroundColor: Colors.amber,
+        toolbarHeight: 210,
         shape: Css.roundBottomAppbar, 
         // title: const Text('Point', style: TextStyle(color: Colors.yellow),),
         title: Column(
@@ -31,7 +31,7 @@ class _Point extends State<Point>{
             // Text('Point', style: TextStyle(color: Colors.yellow),),
             Icon(Icons.diamond_outlined, color: Colors.white, size: 120,),
             // Text('Point', style: TextStyle(color: Color.fromARGB(255, 161, 126, 18)),),
-            Text('Point', style: TextStyle(color: Colors.amber)),
+            Text('Point', style: TextStyle(color: Colors.white)),
           ],
         ),
         centerTitle: true,
