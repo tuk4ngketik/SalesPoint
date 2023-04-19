@@ -78,9 +78,10 @@ flutter:
     - images/bg3.jpg 
     # template kuning
     - images/ikool-app-bg.png
-    - images/ikool-apps-logo.png 
+    - images/ikool-apps-logo.png
     - images/ikool-app-splash.png
     - images/2.png 
+    - images/mobile.png  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
