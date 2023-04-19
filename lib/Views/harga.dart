@@ -90,22 +90,25 @@ class _Harga extends State<Harga>{
     
     _total(  diskon.toInt(),  priceController.subtotal.toInt() );
     
-    return Scaffold(
-      backgroundColor: Colors.grey,
-      appBar: AppBar(
-        // backgroundColor: Colors.black87,
-        backgroundColor: Colors.black,
-        toolbarHeight: 120,
+    return Scaffold( 
+      // backgroundColor: Colors.amber,
+      appBar: AppBar( 
+        backgroundColor: Colors.amber,
+        toolbarHeight: 200,
         shape: Css.roundBottomAppbar,  
         title: Column(
-          children: const [ 
-            Icon(Icons.monetization_on_outlined, color: Colors.white, size: 80,), 
-            Text('Harga', style: TextStyle(color: Colors.amber)),
+          children:    [ 
+            // br(70),
+            // Icon(Icons.monetization_on_outlined, color: Colors.white, size: 80,), 
+            Image.asset('images/2.png', ), 
+            const Text('Pricelist', style: TextStyle(color: Colors.white)),
           ],
         ),
         centerTitle: true, 
+        // flexibleSpace: Image.asset('images/2.png'),
       ),
-      body: (mereks.isEmpty) ? const Center(child: CircularProgressIndicator(),) :  Padding(
+      body: (mereks.isEmpty) ? const Center(child: CircularProgressIndicator(),)  : 
+          Padding(
             padding: const EdgeInsets.all(10.0),
             child: ListView(
               padding: const EdgeInsets.all (20),
@@ -131,77 +134,109 @@ class _Harga extends State<Harga>{
                   title:   Text('Belakang', style: Css.labelHarga,),
                   subtitle: Obx(() => ( priceController.kacaBelakang.isEmpty ) ? const Text(' -- Tidak Ada --') : const KacaBelakang() ),
                 ),  
-
+          
                 ListTile(
                   contentPadding: const EdgeInsets.only(left: 0, right: 0),
                   title:   Text('Sun Roof', style: Css.labelHarga,),
                   subtitle: Obx(() => ( priceController.kacaSunroof.isEmpty ) ? const Text(' -- Tidak Ada --') : const KacaSunroof()),
                 ), 
-
+          
                 const Divider(),
                 Container(
                   padding: const EdgeInsets.all(10),
-                  color: Colors.black,
+                  // color: Colors.black,
                   child: Row(   
                         children: [
-                          Text('Sub Total', style: Css.labelHarga,),  
+                          Text('Sub Total', style: Css.labelTarif,),  
                           Flexible(
                             flex:8,
                             child: Align(
                               alignment: Alignment.centerRight, 
-                              child:  Obx(() => Text( rupiah('Rp ', priceController.subtotal.toInt(), 2), style: Css.labelTarif,), ),
+                              // child:  Obx(() => Text( rupiah('Rp ', priceController.subtotal.toInt(), 2), style: Css.labelTarif,), ), 
+                                child: Container( 
+                                  padding: const EdgeInsets.all(10),
+                                  width: 200,
+                                  child: Obx(() => Text( rupiah('Rp ', priceController.subtotal.toInt(), 2), style: Css.textTotal, textAlign: TextAlign.right,), ),  
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    border: Border.all( 
+                                      width : 1,
+                                    ),
+                                    borderRadius: const BorderRadius.all(Radius.circular(10))
+                                  ),
+                                ),
                             ),
                           ), 
                         ],
                   ),
                 ), 
-
-                Container(
-                  color: Colors.grey,
-                  child: TextField(     
-                    style: const TextStyle(color: Colors.white),
-                    decoration:  InputDecoration(  
-                      hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      hintText: '$diskon',
-                      prefix: const Text('Diskon'),
-                      contentPadding: const EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0),
-                      // fillColor: Colors.red,
-                      // focusColor: Colors.yellow,
-                      suffixIcon: const Icon(Icons.percent), 
-                      // border:                       
-                      focusedBorder:const OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        gapPadding: 0,
-                        borderRadius: BorderRadius.all(Radius.circular(10))
+          
+                Container( 
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start, 
+                    children: [
+                      const Flexible(flex: 6,
+                        child: TextField(   
+                          readOnly: true,  
+                          decoration: InputDecoration(
+                            hintText: 'Discount',
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ), 
-                      border: const OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        gapPadding: 0,
-                        borderRadius: BorderRadius.all(Radius.circular(10))
-                      ) 
-                    ),
-                    textAlign: TextAlign.right,
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) { 
-                      if (value.length > 1 && GetUtils.isNum(value) == false ){
-                        snackError('Error', 'Diskon harus angka');
-                        setState(() => diskon =  30 );
-                        return;
-                      }
-                      if( value.length > 1 && int.parse(value) > 30){
-                        snackError('Error', 'Max diskon 30%'); 
-                        setState(() => diskon = 30 );
-                        return;
-                      }
-                      setState(() => diskon =  int.parse(value) );
-                      _total(  diskon.toInt(),  priceController.subtotal.toInt() );
-                    },
+                      // Flexible(child: Container(width: 10,), flex: 3,),
+                      Flexible(
+                        flex: 4,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: TextField(     
+                            style: const TextStyle(color: Colors.black),
+                            decoration:  InputDecoration(  
+                              
+                              hintStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                              hintText: '$diskon',
+                              // prefix: const Text('Diskon'),
+                              contentPadding: const EdgeInsets.only(left: 10, right: 0, top: 0, bottom: 0), 
+                              suffixIcon: const Icon(Icons.percent), 
+                              // border:                       
+                              focusedBorder:const OutlineInputBorder(
+                                // borderSide: BorderSide.none,
+                                gapPadding: 0,
+                                borderRadius: BorderRadius.all(Radius.circular(10))
+                              ), 
+                              border: const OutlineInputBorder(
+                                // borderSide: BorderSide.none,
+                                gapPadding: 0,
+                                borderRadius: BorderRadius.all(Radius.circular(10))
+                              ) 
+                            ),
+                            textAlign: TextAlign.right,
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) { 
+                              if (value.length > 1 && GetUtils.isNum(value) == false ){
+                                snackError('Error', 'Diskon harus angka');
+                                setState(() => diskon =  30 );
+                                return;
+                              }
+                              if( value.length > 1 && int.parse(value) > 30){
+                                snackError('Error', 'Max diskon 30%'); 
+                                setState(() => diskon = 30 );
+                                return;
+                              }
+                              setState(() => diskon =  int.parse(value) );
+                              _total(  diskon.toInt(),  priceController.subtotal.toInt() );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),  
-
+          
                 Container(
                   padding: const EdgeInsets.all(10),
-                  color: Colors.black,
+                  // color: Colors.black,
                   child: Row( 
                         children: [
                           Center(child: Text('Total', style: Css.labelTarif,)),
@@ -209,13 +244,25 @@ class _Harga extends State<Harga>{
                             flex:8,
                             child: Align(
                               alignment: Alignment.centerRight, 
-                              child: Text( rupiah('Rp ', total.toInt(), 2), style: Css.labelTarif,),
+                              // child: Text( rupiah('Rp ', total.toInt(), 2), style: Css.labelTarif,), 
+                              child: Container( 
+                                padding: const EdgeInsets.all(10),
+                                width: 200,
+                                child: Text(rupiah('Rp ', total.toInt(), 2), style: Css.textTotal, textAlign: TextAlign.right,),  
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  border: Border.all( 
+                                    width : 1,
+                                  ),
+                                  borderRadius: const BorderRadius.all(Radius.circular(10))
+                                ),
+                              ),
                             ),
                           ),  
                         ],
                   ),
                 ),
-
+          
               ],
             ),
           ),
