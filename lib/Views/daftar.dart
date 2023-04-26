@@ -2,19 +2,19 @@
 
 // import 'dart:convert';
 
-import 'dart:convert';
-import 'package:easy_autocomplete/easy_autocomplete.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:package_info_plus/package_info_plus.dart'; 
-import 'package:sales_point/Apis/a_login.dart';
-import 'package:sales_point/Helper/rgx.dart';
-import 'package:sales_point/Helper/tanggal.dart';
-import 'package:sales_point/Views/verifikasi.dart';
-import 'package:sales_point/Views/login.dart'; 
-import 'package:sales_point/dondrawer.dart'; 
-import '../Cfg/css.dart';
-import '../Helper/wg.dart';
+import 'dart:convert'; 
+  import 'package:flutter/material.dart';
+  import 'package:get/get.dart';
+  import 'package:package_info_plus/package_info_plus.dart'; 
+  import 'package:sales_point/Apis/a_login.dart';
+  import 'package:sales_point/Cfg/sess.dart';
+  import 'package:sales_point/Helper/rgx.dart';
+  import 'package:sales_point/Helper/tanggal.dart';
+  import 'package:sales_point/Views/verifikasi.dart';
+  import 'package:sales_point/Views/login.dart'; 
+  import 'package:sales_point/dondrawer.dart'; 
+  import '../Cfg/css.dart';
+  import '../Helper/wg.dart';
 
 class Daftar extends StatefulWidget{
   const Daftar({super.key}); 
@@ -22,19 +22,17 @@ class Daftar extends StatefulWidget{
 } 
 
 class _Daftar extends State<Daftar>{
-
+  
+  Sess sess = Sess();
   final now = DateTime.now(); 
-  Tanggal tgl = Tanggal();
-
+  Tanggal tgl = Tanggal(); 
   ApiLogin apiLogin = ApiLogin();
   String? msgAPiDealerpartisipasi;
 
   bool visiblePass =  false;
   bool isLoad =  false; 
   final _formKey = GlobalKey<FormState>();
-  String? _email, _passwd, _passwdKonfirm, 
-          nama_lengkap,  no_ktp, no_hp,
-          company_serial, branch_serial;
+  String? _email, _passwd, _passwdKonfirm, nama_lengkap,  no_hp ;
   final passwd_ = TextEditingController();
   
   PackageInfo _packageInfo = PackageInfo(
@@ -47,13 +45,12 @@ class _Daftar extends State<Daftar>{
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
     setState(() =>  _packageInfo = info ); 
-    _getDealer();
+    _getDealer(); 
   }
   
   void initState() { 
     super.initState();
-    _initPackageInfo(); 
-    // _getDealer();
+    // _initPackageInfo(); 
   }
  
   void dispose() {
@@ -94,16 +91,17 @@ class _Daftar extends State<Daftar>{
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                            
-                          const Text('Register', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber),),  
+                          const Text('Registrasi', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber),),  
                           const Divider(color: Colors.amber,),
                           br(20), 
                           
-                          // NAma Depan 
+                          // NAma LEngkap 
                           TextFormField( 
                             style: const TextStyle(  fontWeight: FontWeight.bold),
+                            initialValue: 'Nama Saya',
                              decoration:  InputDecoration(       
-                              labelText: 'Full Name',     
-                              hintText: 'Full Name',
+                              labelText: 'Nama Lengkap',     
+                              hintText: 'Nama Lengkap',
                               border: Css.roundInput20, 
                               enabledBorder:  Css.roundInput20,     
                               prefixIcon: const Icon(Icons.person, color: Colors.black),
@@ -114,13 +112,13 @@ class _Daftar extends State<Daftar>{
                             onSaved:(newValue) => nama_lengkap = newValue,
                             validator: (value) { 
                               if(value!.isEmpty){
-                                return 'Fullname is required';
+                                return 'Lengkapi Nama Lengkap';
                               }
                               if(value.length < 3){
-                                return 'Min 3 Characters';
+                                return 'Min 3 karakter';
                               }
                               if( namaLengkap(value) == false){
-                                return 'Invalid character ';
+                                return 'Karakter tidak valid ';
                               }
                               return null;
                             },
@@ -142,7 +140,7 @@ class _Daftar extends State<Daftar>{
                             //   onSaved:(newValue) => no_ktp = newValue,
                             //   validator: (value) { 
                             //     if(value!.isEmpty){
-                            //       return 'Indentity is required';
+                            //       return 'Indentity Lengkapi';
                             //     }
                             //     if( numberOnly(value) == false){
                             //       return 'Number only';
@@ -158,8 +156,9 @@ class _Daftar extends State<Daftar>{
                           // No Handphone
                           TextFormField( 
                             style: const TextStyle(  fontWeight: FontWeight.bold),
+                            initialValue: '081812341234',
                              decoration:  InputDecoration(       
-                              labelText: 'Phone',
+                              labelText: 'No. HP',
                               hintText: '08xx',    
                               border: Css.round20,      
                               enabledBorder:  Css.roundInput20, 
@@ -171,13 +170,13 @@ class _Daftar extends State<Daftar>{
                             onSaved:(newValue) => no_hp = newValue,
                             validator: (value) { 
                               if(  value!.isEmpty )  {
-                                return 'Phone is required';
+                                return 'Lengkapi No. HP';
                               } 
                               if( numberOnly(value) == false){
-                                return 'Number only';
+                                return 'Harus angka';
                               }
                               if(  value.length < 10  || value.length > 15 || kosongLapan(value) == false )  {
-                                return 'Invalid phone number';
+                                return 'No. HP tidak valid';
                               } 
                               return null;
                             },
@@ -187,13 +186,14 @@ class _Daftar extends State<Daftar>{
                           // Email 
                           TextFormField( 
                             style: const TextStyle(  fontWeight: FontWeight.bold),
+                            initialValue: 'a@mail.com',
                             onSaved:(newValue) => _email = newValue,
                             validator: (value) {
                               if(value!.isEmpty){
-                                return 'Email is required';
+                                return 'Lengkapi Email';
                               }
                               if (GetUtils.isEmail( value ) == false ){                              
-                               return 'Invalid email';
+                               return 'Email tidak valid';
                               }
                               return null;
                             },
@@ -212,22 +212,23 @@ class _Daftar extends State<Daftar>{
                               
                           // Password 
                           TextFormField( 
-                            style: const TextStyle(  fontWeight: FontWeight.bold), 
+                            style: const TextStyle(  fontWeight: FontWeight.bold),  
+                            // initialValue: 'qqqqqq',
                             onSaved:(newValue) => _passwd = newValue,
                             controller: passwd_,
                             validator: (value) {
                               if(value!.isEmpty  ){
-                                return 'Password is required';
+                                return 'Lengkapi Kata Sandi';
                               }
                               if( value.length < 6 || value.length > 15){
-                                return 'Password min 6 s/d  15 characters';
+                                return 'Kata Sandi min 6 s/d  15 karakter';
                               }
                               return null;
                             },
                             obscureText: (visiblePass ==  false) ? true : false,
-                             decoration:  InputDecoration(        
+                            decoration:  InputDecoration(        
                               labelStyle: Css.labelStyle,
-                              labelText: 'Password',   
+                              labelText: 'Kata Sandi',   
                               border: Css.round20, 
                               enabledBorder:  Css.roundInput20, 
                               prefixIcon: const Icon(Icons.lock_open, color: Colors.black),
@@ -249,28 +250,29 @@ class _Daftar extends State<Daftar>{
                               
                           // Password Konfirm
                           TextFormField( 
-                            style: const TextStyle(  fontWeight: FontWeight.bold),
-                            onSaved:(newValue) => _passwdKonfirm = newValue,
-                            validator: (value) {
-                              if(value!.isEmpty){
-                                return 'Retype Password is required'; 
-                              }
-                              if(value != passwd_.text ){
-                                return 'Password & Retype password not match';  
-                              }
-                              return null;
-                            },
-                            obscureText: (visiblePass ==  false) ? true : false,
-                             decoration:  InputDecoration(        
+                            initialValue: 'qqqqqq',
+                            style: const TextStyle(  fontWeight: FontWeight.bold),  
+                            // obscureText: (visiblePass ==  false) ? true : false,
+                            decoration:  InputDecoration(        
                               labelStyle: Css.labelStyle,
-                              labelText: 'Retype Password',   
+                              labelText: 'Konfirmasi Kata Sandi',   
                               border: Css.round20, 
                               enabledBorder:  Css.roundInput20, 
                               prefixIcon: const Icon(Icons.password, color: Colors.black),
                               hintText: ' - - -',  
                               filled: true,
                               fillColor: Colors.white,
-                             ),
+                            ),
+                            onSaved:(newValue) => _passwdKonfirm = newValue,
+                            validator: (value) {
+                              if(value!.isEmpty){
+                                return 'Lengkapi Konfirmasi Kata Sandi'; 
+                              }
+                              if(value != passwd_.text ){
+                                return 'Kata Sandi & Konfirmasi tidak sama';  
+                              }
+                              return null;
+                            },
                           ),
                                
                           br(20), 
@@ -285,7 +287,7 @@ class _Daftar extends State<Daftar>{
                                 child: TextButton( 
                                     onPressed: (){    
                                       if (_formKey.currentState!.validate() == false) { return; }
-                                      _formKey.currentState!.save(); 
+                                      _formKey.currentState!.save();  
                                       _daftar();
                                    },
                                     child:  Center(
@@ -326,7 +328,8 @@ class _Daftar extends State<Daftar>{
   }
   
 
-  Future<void> _daftar() async {      
+  Future<void> _daftar() async {     
+
     setState(() { isLoad = true; }); 
     String pckDate = base64.encode(utf8.encode( tgl.dmy() )); 
     String pckName = base64.encode(utf8.encode( _packageInfo.packageName));   
@@ -341,16 +344,15 @@ class _Daftar extends State<Daftar>{
     };
  
     var data = {
-      'company_serial' : company_serial, 
-      'branch_serial' : branch_serial,
       'email' : _email,
       'passwd' : _passwd,
       'nama_lengkap' : nama_lengkap,
-      'no_ktp' : no_ktp,
       'phone' : no_hp
+      // 'company_serial' : company_serial, 
+      // 'branch_serial' : branch_serial,
+      // 'no_ktp' : no_ktp,
     }; 
-    // print ('headers $headers');
-    print ('data $data'); 
+    // print ('headers $headers')   
 
     apiLogin.daftar( headers, jsonEncode(data) ).then((v) {
 
@@ -367,11 +369,15 @@ class _Daftar extends State<Daftar>{
           // error is_unique 
           setState(() { isLoad = false; }); 
           return;
-        }          
-          print('Next Ok');
-          Get.offAll(() => const Verifikasi());
-
+        }       
+ 
+        sess.setSess('status_app', 'register');
+        sess.setSess('namaLengkap', nama_lengkap!);
+        sess.setSess('email',  '$_email');
+        sess.setSess('phone',  no_hp!);  
+        Get.offAll(() => const Verifikasi());
     });  
+
   }
 
   List<String> listBranchname = [];
