@@ -10,7 +10,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sales_point/Apis/a_login.dart';
 import 'package:sales_point/Helper/rgx.dart';
 import 'package:sales_point/Helper/tanggal.dart';
-import 'package:sales_point/Views/daftar-sukses.dart'; 
+import 'package:sales_point/Views/verifikasi.dart';
+import 'package:sales_point/Views/login.dart'; 
 import 'package:sales_point/dondrawer.dart'; 
 import '../Cfg/css.dart';
 import '../Helper/wg.dart';
@@ -32,7 +33,8 @@ class _Daftar extends State<Daftar>{
   bool isLoad =  false; 
   final _formKey = GlobalKey<FormState>();
   String? _email, _passwd, _passwdKonfirm, 
-          nama_depan, nama_belakang, no_ktp, no_hp;
+          nama_lengkap,  no_ktp, no_hp,
+          company_serial, branch_serial;
   final passwd_ = TextEditingController();
   
   PackageInfo _packageInfo = PackageInfo(
@@ -62,240 +64,261 @@ class _Daftar extends State<Daftar>{
   @override
   Widget build(BuildContext context) {
     return Scaffold( 
-      backgroundColor: Colors.black,
+      // backgroundColor: Colors.black,
       drawer: const DonDrawer(),
       
       body: Container(        
         decoration: const BoxDecoration(
           image: DecorationImage( 
             image: AssetImage("images/bg3.jpg"), 
+            // image: AssetImage("images/ikool-app-bg.png"),  
             fit: BoxFit.cover,
           ),
         ),
 
         child: Center( 
-          child: (msgAPiDealerpartisipasi == null) ? const CircularProgressIndicator() : ListView( 
-            children: [
-
-              // Image.asset('images/v-kool_logo.png', height: 60,), 
-
-              Opacity(opacity: 0.9,
-                child: Card( 
-                // color: Colors.black,
-                shadowColor: Colors.black,
-                elevation: 20,
-                shape: Css.round20,
-                margin: const EdgeInsets.all(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Form( key : _formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        
-                        br(20),
-                        const Text('Daftar', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),  
-                        br(20),
-
-                        //Dealer
-                        EasyAutocomplete(    
-                          decoration:   const InputDecoration(   
-                            labelText: 'Dealer', 
-                            contentPadding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
-                            border: OutlineInputBorder( 
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              gapPadding: 0,
-                            ), 
-                          ),
-                          suggestions:  listBranchname,
-                          suggestionBuilder: (data) {
-                            return ListTile(
-                              title: Text(data),
-                              subtitle: Text('${mapBranch[data]}'),
-                            );
-                          },
-                          onChanged: (value)  => print('onchange $value'),
-                          onSubmitted: (v){   
-                              print('onSubmitted :  $v');    
-                            }, 
-                        ),
-                        br(12),
-                        // NAma Depan
-                        TextFormField( 
-                           decoration:  InputDecoration(       
-                            labelText: 'Nama Lengkap',
-                            // hintText: 'Nama Depan',    
-                            border: Css.round20,      
-                            prefixIcon: const Icon(Icons.person, color: Colors.black),
-                            labelStyle: Css.labelStyle,
-                           ), 
-                          onSaved:(newValue) => nama_depan = newValue,
-                          validator: (value) { 
-                            if(value!.isEmpty){
-                              return 'Lengkapi kolom Nama';
-                            }
-                            if( namaLengkap(value) == false){
-                              return 'Nama depan harus Alfabet';
-                            }
-                            return null;
-                          },
-                        ), 
-                        br(12),
-                        // No KTP
-                        TextFormField( 
-                           decoration:  InputDecoration(       
-                            labelText: 'No KTP',
-                            // hintText: 'Nama Depan',    
-                            border: Css.round20,      
-                            prefixIcon: const Icon(Icons.tag, color: Colors.black),
-                            labelStyle: Css.labelStyle,
-                           ), 
-                          onSaved:(newValue) => no_ktp = newValue,
-                          validator: (value) { 
-                            if( numberOnly(value) == false){
-                              return 'No. KTP harus angka';
-                            }
-                            if(  value!.length < 16  || value.length > 16 )  {
-                              return 'No. KTP tidak valid';
-                            }
-                            return null;
-                          },
-                        ),
-                        br(12),
-                        // No Handphone
-                        TextFormField( 
-                           decoration:  InputDecoration(       
-                            labelText: 'No. Hp',
-                            // hintText: 'Nama Depan',    
-                            border: Css.round20,      
-                            prefixIcon: const Icon(Icons.phone, color: Colors.black),
-                            labelStyle: Css.labelStyle,
-                           ), 
-                          onSaved:(newValue) => no_hp = newValue,
-                          validator: (value) { 
-                            if( numberOnly(value) == false){
-                              return 'No. Hp harus angka';
-                            }
-                            if(  value!.length < 10  || value.length > 15 || kosongLapan(value) == false )  {
-                              return 'No. Hp tidak valid';
-                            } 
-                            return null;
-                          },
-                        ),
-                        br(12),
-                        // Email 
-                        TextFormField( 
-                          onSaved:(newValue) => _email = newValue,
-                          validator: (value) {
-                            if(value!.isEmpty){
-                              return 'Lengkapi Email';
-                            }
-                            if (GetUtils.isEmail( value ) == false ){                              
-                             return 'Email tidak valid';
-                            }
-                            return null;
-                          },
-                           decoration:  InputDecoration(           
-                            border: Css.round20,      
-                            prefixIcon: const Icon(Icons.email, color: Colors.black),
-                            labelStyle: Css.labelStyle,
-                            labelText: 'Email',
-                            hintText: 'Alamat Email',
-                           ), 
-                        ),
-                        br(12),
-                        // Password 
-                        TextFormField( 
-                          onSaved:(newValue) => _passwd = newValue,
-                          controller: passwd_,
-                          validator: (value) {
-                            if(value!.isEmpty  ){
-                              return 'Lengkapi password';
-                            }
-                            if( value.length < 6 || value.length > 15){
-                              return 'Password min 6 s/d  15 karakter';
-                            }
-                            return null;
-                          },
-                          obscureText: (visiblePass ==  false) ? true : false,
-                           decoration:  InputDecoration(        
-                            labelStyle: Css.labelStyle,
-                            labelText: 'Password',   
-                            border: Css.round20, 
-                            prefixIcon: const Icon(Icons.lock_open, color: Colors.black),
-                            hintText: ' - - -',  
-                            suffixIcon: IconButton(
-                              onPressed: (){ 
-                                setState(() {
-                                  visiblePass =  !visiblePass;
-                                  print('visiblePass $visiblePass' );
-                                });
-                              }, 
-                              icon: (visiblePass ==  false) ? const Icon(Icons.visibility_off_sharp, color: Colors.black) : const Icon(Icons.visibility, color: Colors.black,)
-                            )
-                           ),
-                        ),
-                        br(12),
-                        // Password Konfirm
-                        TextFormField( 
-                          onSaved:(newValue) => _passwdKonfirm = newValue,
-                          validator: (value) {
-                            if(value!.isEmpty){
-                              return 'Lengkapi Password konfirmasi'; 
-                            }
-                            if(value != passwd_.text ){
-                              return 'Password konfirmasi harus sesuai';  
-                            }
-                            return null;
-                          },
-                          obscureText: (visiblePass ==  false) ? true : false,
-                           decoration:  InputDecoration(        
-                            labelStyle: Css.labelStyle,
-                            labelText: 'Konfirmasi Password',   
-                            border: Css.round20, 
-                            prefixIcon: const Icon(Icons.password, color: Colors.black),
-                            hintText: ' - - -',  
-                           ),
-                        ),
- 
-                        
-                        br(20), 
-                        Container(
-                          // color: Colors.yellow,
-                            decoration: const BoxDecoration(
-                              color: Colors.amber,
-                              // border: Border.all(width: 1),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                            ),
-                            height: 55,
-                            child:  Center(
-                              child: TextButton( 
-                                  onPressed: (){    
-                                    if (_formKey.currentState!.validate() == false) { return; }
-                                    _formKey.currentState!.save(); 
-                                    _daftar();
-                                 },
-                                  child:  Center(
-                                    child: ( isLoad == true ) 
-                                      ? const CircularProgressIndicator(color: Colors.orange,)
-                                      : const Text('Daftar', style: TextStyle(fontSize: 18, color: Colors.black),)
-                                      // : const Icon(Icons.send)
-                                  ),
-                                ),
-                            )
-                          ), 
-                        br(20), 
+          child: 
+          // (msgAPiDealerpartisipasi == null) ? const CircularProgressIndicator() : 
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Form( key : _formKey,
+              child: SingleChildScrollView(
+                child: Opacity(opacity: 0.75,
+                  child: Card(
+                    shape:  Css.round20,
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                            
-                    ],),
+                          const Text('Register', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber),),  
+                          const Divider(color: Colors.amber,),
+                          br(20), 
+                          
+                          // NAma Depan 
+                          TextFormField( 
+                            style: const TextStyle(  fontWeight: FontWeight.bold),
+                             decoration:  InputDecoration(       
+                              labelText: 'Full Name',     
+                              hintText: 'Full Name',
+                              border: Css.roundInput20, 
+                              enabledBorder:  Css.roundInput20,     
+                              prefixIcon: const Icon(Icons.person, color: Colors.black),
+                              labelStyle: Css.labelStyle,
+                              filled: true,
+                              fillColor: Colors.black12,
+                             ), 
+                            onSaved:(newValue) => nama_lengkap = newValue,
+                            validator: (value) { 
+                              if(value!.isEmpty){
+                                return 'Fullname is required';
+                              }
+                              if(value.length < 3){
+                                return 'Min 3 Characters';
+                              }
+                              if( namaLengkap(value) == false){
+                                return 'Invalid character ';
+                              }
+                              return null;
+                            },
+                          ), 
+                          br(12),
+                              
+                          // No KTP
+                          // TextFormField( 
+                            //    decoration:  InputDecoration(       
+                            //     labelText: 'Identity Number',
+                            //     hintText: 'ID / KTP',    
+                            //     border: Css.roundInput20,   
+                            //     enabledBorder:  Css.roundInput20,    
+                            //     prefixIcon: const Icon(Icons.tag, color: Colors.black),
+                            //     labelStyle: Css.labelStyle,
+                            //     filled: true,
+                            //     fillColor: Colors.black12,,
+                            //    ), 
+                            //   onSaved:(newValue) => no_ktp = newValue,
+                            //   validator: (value) { 
+                            //     if(value!.isEmpty){
+                            //       return 'Indentity is required';
+                            //     }
+                            //     if( numberOnly(value) == false){
+                            //       return 'Number only';
+                            //     }
+                            //     if(  value.length < 16  || value.length > 16 )  {
+                            //       return '16 Digit Characters';
+                            //     }
+                            //     return null;
+                            //   },
+                          // ),
+                          // br(12),
+                              
+                          // No Handphone
+                          TextFormField( 
+                            style: const TextStyle(  fontWeight: FontWeight.bold),
+                             decoration:  InputDecoration(       
+                              labelText: 'Phone',
+                              hintText: '08xx',    
+                              border: Css.round20,      
+                              enabledBorder:  Css.roundInput20, 
+                              prefixIcon: const Icon(Icons.phone, color: Colors.black),
+                              labelStyle: Css.labelStyle,
+                              filled: true,
+                              fillColor: Colors.black12,
+                             ), 
+                            onSaved:(newValue) => no_hp = newValue,
+                            validator: (value) { 
+                              if(  value!.isEmpty )  {
+                                return 'Phone is required';
+                              } 
+                              if( numberOnly(value) == false){
+                                return 'Number only';
+                              }
+                              if(  value.length < 10  || value.length > 15 || kosongLapan(value) == false )  {
+                                return 'Invalid phone number';
+                              } 
+                              return null;
+                            },
+                          ),
+                          br(12),
+                              
+                          // Email 
+                          TextFormField( 
+                            style: const TextStyle(  fontWeight: FontWeight.bold),
+                            onSaved:(newValue) => _email = newValue,
+                            validator: (value) {
+                              if(value!.isEmpty){
+                                return 'Email is required';
+                              }
+                              if (GetUtils.isEmail( value ) == false ){                              
+                               return 'Invalid email';
+                              }
+                              return null;
+                            },
+                             decoration:  InputDecoration(           
+                              border: Css.round20,    
+                              enabledBorder:  Css.roundInput20,   
+                              prefixIcon: const Icon(Icons.email, color: Colors.black),
+                              labelStyle: Css.labelStyle,
+                              labelText: 'Email',
+                              hintText: 'your@mail.com',
+                              filled: true,
+                              fillColor: Colors.black12,
+                             ), 
+                          ),
+                          br(12),
+                              
+                          // Password 
+                          TextFormField( 
+                            style: const TextStyle(  fontWeight: FontWeight.bold), 
+                            onSaved:(newValue) => _passwd = newValue,
+                            controller: passwd_,
+                            validator: (value) {
+                              if(value!.isEmpty  ){
+                                return 'Password is required';
+                              }
+                              if( value.length < 6 || value.length > 15){
+                                return 'Password min 6 s/d  15 characters';
+                              }
+                              return null;
+                            },
+                            obscureText: (visiblePass ==  false) ? true : false,
+                             decoration:  InputDecoration(        
+                              labelStyle: Css.labelStyle,
+                              labelText: 'Password',   
+                              border: Css.round20, 
+                              enabledBorder:  Css.roundInput20, 
+                              prefixIcon: const Icon(Icons.lock_open, color: Colors.black),
+                              hintText: ' - - -',  
+                              filled: true,
+                              fillColor: Colors.black12,
+                              suffixIcon: IconButton(
+                                onPressed: (){ 
+                                  setState(() {
+                                    visiblePass =  !visiblePass;
+                                    print('visiblePass $visiblePass' );
+                                  });
+                                }, 
+                                icon: (visiblePass ==  false) ? const Icon(Icons.visibility_off_sharp, color: Colors.black) : const Icon(Icons.visibility, color: Colors.black,)
+                              )
+                             ),
+                          ),
+                          br(10),
+                              
+                          // Password Konfirm
+                          TextFormField( 
+                            style: const TextStyle(  fontWeight: FontWeight.bold),
+                            onSaved:(newValue) => _passwdKonfirm = newValue,
+                            validator: (value) {
+                              if(value!.isEmpty){
+                                return 'Retype Password is required'; 
+                              }
+                              if(value != passwd_.text ){
+                                return 'Password & Retype password not match';  
+                              }
+                              return null;
+                            },
+                            obscureText: (visiblePass ==  false) ? true : false,
+                             decoration:  InputDecoration(        
+                              labelStyle: Css.labelStyle,
+                              labelText: 'Retype Password',   
+                              border: Css.round20, 
+                              enabledBorder:  Css.roundInput20, 
+                              prefixIcon: const Icon(Icons.password, color: Colors.black),
+                              hintText: ' - - -',  
+                              filled: true,
+                              fillColor: Colors.white,
+                             ),
+                          ),
+                               
+                          br(20), 
+                          Container(
+                            // color: Colors.yellow,
+                              decoration: const BoxDecoration(
+                                color: Colors.amber,   
+                                borderRadius: BorderRadius.all(Radius.circular(20))
+                              ),
+                              height: 55,
+                              child:  Center(
+                                child: TextButton( 
+                                    onPressed: (){    
+                                      if (_formKey.currentState!.validate() == false) { return; }
+                                      _formKey.currentState!.save(); 
+                                      _daftar();
+                                   },
+                                    child:  Center(
+                                      child: ( isLoad == true ) 
+                                        ? const CircularProgressIndicator(color: Colors.orange,)
+                                        : const Text('Register', style: TextStyle(fontSize: 18, color: Colors.black),)
+                                        // : const Icon(Icons.send)
+                                    ),
+                                  ),
+                              )
+                            ),  
+                                  
+                            Flexible( 
+                              child: Row(  
+                                mainAxisSize: MainAxisSize.min,
+                                children: [ 
+                                  TextButton(
+                                    onPressed: ()=>Get.to(const Login()), 
+                                    child: const Text('Login', style: TextStyle(color: Colors.red, fontSize: 17),)
+                                  ),
+                                  TextButton(
+                                    onPressed: ()=>Get.to(const Verifikasi()), 
+                                    child: const Text('Verifikasi', style: TextStyle(color: Colors.red, fontSize: 17),)
+                                  ) 
+                                ],
+                              ),
+                            ) 
+                      ],),
+                    ),
                   ),
-                ),        
                 ),
               ),
-
-            ],
+            ),
           ),
         ),
       ),
@@ -318,15 +341,16 @@ class _Daftar extends State<Daftar>{
     };
  
     var data = {
+      'company_serial' : company_serial, 
+      'branch_serial' : branch_serial,
       'email' : _email,
       'passwd' : _passwd,
-      'first_name' : nama_depan,
-      'last_name' : nama_belakang,
+      'nama_lengkap' : nama_lengkap,
       'no_ktp' : no_ktp,
-      'phone' : no_hp 
+      'phone' : no_hp
     }; 
     // print ('headers $headers');
-    print ('data $data');
+    print ('data $data'); 
 
     apiLogin.daftar( headers, jsonEncode(data) ).then((v) {
 
@@ -334,26 +358,28 @@ class _Daftar extends State<Daftar>{
         String? msg = v.message;
 
         if(status == false){
-          snackAlert('Error',  '$msg');
+          defaultDialogErr(msg!); 
           setState(() { isLoad = false; }); 
           return;
         }
          
         if(msg != 'sukses'){
-          // error is_unique
-          defaultDialogErr(msg!);
+          // error is_unique 
           setState(() { isLoad = false; }); 
           return;
         }          
           print('Next Ok');
-          Get.off(() => const DaftarSukses());
+          Get.offAll(() => const Verifikasi());
 
     });  
   }
 
   List<String> listBranchname = [];
   Map<String, String> mapBranch = {};
+  Map<String, String> mapCompanySerial = {}; // INsert from tb company_branch.cmpany_serial
+  Map<String, String> mapBranchSerial  = {};    // INsert from tb company_branch.serial
 
+  // List of dealer
   Future<void> _getDealer()async {
     String pckDate = base64.encode(utf8.encode( tgl.dmy() )); 
     String pckName = base64.encode(utf8.encode( _packageInfo.packageName));   
@@ -372,14 +398,15 @@ class _Daftar extends State<Daftar>{
       bool? stat = value!.status;
       if(stat == false){
         return;
-      } 
-
+      }
 
       for (var element in value.data!) {
         print('element  ${element.branchName}');
         setState(() {
           listBranchname.add('${element.branchName}');
           mapBranch['${element.branchName}'] = '${element.kota}' ;
+          mapCompanySerial['${element.branchName}'] = '${element.companySerial}';
+          mapBranchSerial['${element.branchName}'] = '${element.serial}';
         });
       }
 
