@@ -1,7 +1,7 @@
 
 bool namaLengkap(var v){  
   RegExp exp = RegExp(r'^[a-zA-Z\s]+$');   
-  if( v.length > 1 &&  !exp.hasMatch(v)){   
+  if( v.length > 0 &&  !exp.hasMatch(v)){   
     return false;
   }  
   return true;
@@ -9,7 +9,7 @@ bool namaLengkap(var v){
 
 bool alphabetOnly(var v){  
   RegExp exp = RegExp(r'^[a-zA-Z]+$');   
-  if( v.length > 1 &&  !exp.hasMatch(v)){   
+  if( v.length > 0 &&  !exp.hasMatch(v)){   
     return false;
   }  
   return true;
@@ -17,7 +17,7 @@ bool alphabetOnly(var v){
 
 bool numberOnly(var v){  
   RegExp exp = RegExp(r'^[0-9]+$');   
-  if( v.length > 1 &&  !exp.hasMatch(v)){   
+  if( v.length > 0 &&  !exp.hasMatch(v)){   
     return false;
   }  
   return true;

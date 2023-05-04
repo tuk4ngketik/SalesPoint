@@ -57,10 +57,11 @@ Widget spasi(double width){
  defaultDialogErr(String msg){ 
           Get.defaultDialog(
             title: '',
-            // contentPadding: const EdgeInsets.all(0),
+            titlePadding: const EdgeInsets.all(0),
+            contentPadding: const EdgeInsets.all(20),
             content: Column(children:   [
-              const Icon(Icons.error, color: Colors.red,),
-              const Divider(),
+              const Icon(Icons.error, color: Colors.red, size: 40,),
+              const Divider(color: Colors.amber,),
               Text(msg)
             ],),
             textCancel: 'Tutup',
