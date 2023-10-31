@@ -54,8 +54,7 @@ class _Merek extends State<Merek>{
       'targetpath': 'c2lzdGVtZ2FyYW5zaS5jb20vc2l0ZS9hcGk=',
       'apikey': 'aUtvb2wtU2FsZXMtUG9pbnQ',  
       'Content-Type': 'application/json'
-    };  
-
+    };   
   }
   
   @override
@@ -83,7 +82,8 @@ class _Merek extends State<Merek>{
         });
       });
 
-    });
+    })
+    .catchError((e) => snackError('Erroe Load Tipe Mobil', '${e.msg}'));
   }
 
   final _merek = TextEditingController();
@@ -99,45 +99,59 @@ class _Merek extends State<Merek>{
     return Column(
       children: [
 
-        ListTile(
-          contentPadding: const EdgeInsets.only(left: 0, right: 0),
-          title: Text('Merk', style: Css.labelHarga,),
-          subtitle: EasyAutocomplete(  
-            controller: _merek,
-            decoration:   InputDecoration(   
-              suffixIcon:  ( _merek.text.isNotEmpty )  ? IconButton(
-                onPressed: (){ 
-                  _clearKaca();
-                  _merek.clear();  
-                },
-                icon: const Icon(Icons.close),
-              ) : null,   
-              contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
-              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
-              border: const OutlineInputBorder( 
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                gapPadding: 0,
-              ), 
+        Card(  
+          // shadowColor: Color.fromARGB(255, 235, 194, 70), 
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              contentPadding: const EdgeInsets.only(left: 0, right: 0),
+              title: Text('Merk', style: Css.labelHarga,),
+              subtitle: EasyAutocomplete(  
+                controller: _merek,
+                decoration:   InputDecoration(   
+                  suffixIcon:  ( _merek.text.isNotEmpty )  ? IconButton(
+                    onPressed: (){ 
+                      print('Merek clear');
+                      print('subTotal: ${priceController.subtotal}');
+                      _clearKaca();
+                      _merek.clear();  
+                      print('subTotal after _clearKaca(): ${priceController.subtotal}');
+                    },
+                    icon: const Icon(Icons.close),
+                  ) : null,   
+                  contentPadding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
+                  focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
+                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ), 
+                  border: const OutlineInputBorder( 
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    gapPadding: 0,
+                  ), 
+                ),
+                suggestions:  widget.listMerek,
+                onChanged: (value)  {  
+                  _clearKaca() ;
+                },  
+                onSubmitted: (v){    
+                    _clearKaca();
+                    priceController.setBrand(v); 
+                    _getTipe(v);
+                    print('Merek :  $v');   
+                    _merek.text = v;
+                  }, 
+              ),
             ),
-            suggestions:  widget.listMerek,
-            onChanged: (value)  {  
-              _clearKaca() ;
-            },  
-            onSubmitted: (v){    
-                _clearKaca();
-                priceController.setBrand(v); 
-                _getTipe(v);
-                print('Merek :  $v');   
-                _merek.text = v;
-              }, 
           ),
         ),
          
-        ListTile(
-          contentPadding: const EdgeInsets.only(left: 0, right: 0),
-          title: Text('Tipe', style: Css.labelHarga,),
-          subtitle: (carTypes.isEmpty) ? const Text(' -- Pilih Tipe --  ')  : CarType(listTipe: carTypes) ,
+        Card( 
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: ListTile(
+              contentPadding: const EdgeInsets.only(left: 0, right: 0),
+              title: Text('Tipe', style: Css.labelHarga,),
+              subtitle: (carTypes.isEmpty) ? const Text(' -- Pilih Tipe --  ')  : CarType(listTipe: carTypes) ,
+            ),
+          ),
         ),
  
 
@@ -152,7 +166,15 @@ class _Merek extends State<Merek>{
     priceController.set_kacaBelakang([]);
     priceController.set_kacaSamping([]);
     priceController.set_kacaSunroof([]);
+      priceController.set_nilaiKacaDepan(0);
+      priceController.set_nilaiKacaSamping(0);
+      priceController.set_nilaiKacaBelakang(0);
+      priceController.set_nilaiKacaSunroof(0);
     priceController.clear_subTotal(); 
+    priceController.clear_total();
+    // print('priceController.nilai_kacaDepan ${priceController.nilai_kacaDepan} ');
+    // print('priceController.nilai_kacaSamping ${priceController.nilai_kacaSamping} ');
+    // print('priceController.nilai_kacaBelakang ${priceController.nilai_kacaBelakang} ');
   }
 
 }//End

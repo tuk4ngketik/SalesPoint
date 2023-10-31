@@ -10,8 +10,7 @@ import 'package:sales_point/Cfg/sess.dart';
 import 'package:sales_point/Helper/tanggal.dart'; 
 import 'package:sales_point/Views/daftar.dart';
 import 'package:sales_point/Views/forgot.dart'; 
-import 'package:sales_point/Views/main-page.dart';
-import 'package:sales_point/dondrawer.dart'; 
+import 'package:sales_point/Views/main-page.dart'; 
 
 import '../Cfg/css.dart';
 import '../Helper/wg.dart';
@@ -60,79 +59,94 @@ class _Login extends State<Login>{
   @override
   Widget build(BuildContext context) {
     return Scaffold( 
-      backgroundColor: Colors.black,
-      drawer: const DonDrawer(),
+      // backgroundColor: Colors.black, 
       
       body: Container(        
         decoration: const BoxDecoration(
           image: DecorationImage( 
-            image: AssetImage("images/bg3.jpg"), 
+            image: AssetImage("images/bg2.jpg"),  
+            // image: AssetImage("images/ikool-app-bg.png"),  
             fit: BoxFit.cover,
           ),
         ),
 
         child: Center( 
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-
-              Image.asset('images/v-kool_logo.png', height: 60,), 
-
-              Opacity(opacity: 0.9,
-                child: Card( 
-                // color: Colors.black,
-                shadowColor: Colors.black,
-                elevation: 20,
-                shape: Css.round20,
-                margin: const EdgeInsets.all(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, 
+              children: [
+            
+                // Image.asset('images/ikool-apps-logo.png', height: 90,),  
+                Image.asset('images/v-kool_logo.png', height: 90,),  
+                // const Text('Login', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),),  
+                         
+            
+                Padding(
+                  padding: const EdgeInsets.all(30.0),
                   child: Form( key : _formKey,
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        
-                        br(20),
-                        const Text('Login', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),  
-                        br(20),
-                        
-                        TextFormField( 
+                      mainAxisSize: MainAxisSize.min, 
+                      crossAxisAlignment: CrossAxisAlignment.start,
+            
+                      children: [ 
+                        br(20), 
+                        TextFormField(  
+                          style: const TextStyle(  fontWeight: FontWeight.normal, color: Colors.white, fontSize: 19    ),
                           onSaved:(newValue) => _email = newValue,
                           validator: (value) {
                             if(value!.isEmpty){
-                              return 'Email is required';
+                              // return 'Email is required';
+                              return 'Lengkapi Email';
                             }
                             if (GetUtils.isEmail( value ) == false ){                              
-                             return 'Ivalid email';
+                            //  return 'Ivalid email';                        
+                             return 'Email tidak valid';
                             }
                             return null;
                           },
-                           decoration:  InputDecoration(           
-                            border: Css.round20,      
+                           decoration:  InputDecoration(   
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(width: 0, strokeAlign: 0, style: BorderStyle.none),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),  
+                            ),
+                            errorBorder: Css.roundInput20, 
+                            focusedBorder: Css.roundInput20, 
+                            border: Css.roundInput20, 
                             prefixIcon: const Icon(Icons.email, color: Colors.black),
-                            labelStyle: Css.labelStyle,
+                            labelStyle: Css.labelLoginStyle,
                             labelText: 'Email',
-                            hintText: 'Your Email',
-                           ), 
+                            hintText: 'Email anda', 
+                            filled: true,
+                            fillColor: Colors.white54,
+                           ),  
                         ),
-                        br(12),
+                        br(20),
                         
                         TextFormField( 
+                          style: const TextStyle(  fontWeight: FontWeight.normal, color: Colors.white, fontSize: 19    ),
                           onSaved:(newValue) => _passwd = newValue,
                           validator: (value) {
                             if(value!.isEmpty){
-                              return 'Password is required';
+                              // return 'Password is required';
+                              return 'Lengkapi kata sandi';
                             }
                             return null;
                           },
                           obscureText: (visiblePass ==  false) ? true : false,
-                           decoration:  InputDecoration(        
-                            labelStyle: Css.labelStyle,
-                            labelText: 'Password',   
-                            border: Css.round20, 
+                           decoration:  InputDecoration(    
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(width: 0, strokeAlign: 0, style: BorderStyle.none),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),  
+                            ),
+                            errorBorder: Css.roundInput20, 
+                            focusedBorder: Css.roundInput20, 
+                            labelStyle: Css.labelLoginStyle,
+                            labelText: 'Kata Sandi',   
+                            border: Css.roundInput20, 
                             prefixIcon: const Icon(Icons.lock_open, color: Colors.black),
-                            hintText: 'Password',  
+                            hintText: 'Kata sandi',  
+                            filled: true,
+                            fillColor: Colors.white54,
                             suffixIcon: IconButton(
                               onPressed: (){ 
                                 setState(() {
@@ -143,14 +157,20 @@ class _Login extends State<Login>{
                               icon: (visiblePass ==  false) ? const Icon(Icons.visibility_off_sharp, color: Colors.black) : const Icon(Icons.visibility, color: Colors.black,)
                             )
                            ),
-                        ),
-                        br(20),
-                                  
+                        ), 
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: TextButton(
+                            onPressed: ()=> Get.to(const Forgot()), 
+                            child: const Text('Lupa Kata sandi ?', style: TextStyle(color: Colors.white),)
+                          ), 
+                        ), 
+                                    
                         Container(
                           // color: Colors.yellow,
                             decoration: const BoxDecoration(
-                              color: Colors.amber,
-                              // border: Border.all(width: 1),
+                              color: Colors.amber, 
+                              // color: Colors.black, 
                               borderRadius: BorderRadius.all(Radius.circular(20))
                             ),
                             height: 55,
@@ -163,36 +183,29 @@ class _Login extends State<Login>{
                                  },
                                   child:  Center(
                                     child: ( isLoad == true ) 
-                                      ? const CircularProgressIndicator(color: Colors.orange,)
-                                      : const Text('Login', style: TextStyle(fontSize: 18, color: Colors.black),)
+                                      ? const CircularProgressIndicator(color: Colors.orange, strokeWidth: 2, ) 
+                                      : const Text('Login', style: TextStyle(fontSize: 18, color: Colors.white),)
                                       // : const Icon(Icons.send)
                                   ),
                                 ),
                             )
-                          ), 
-                          br(20), 
+                          ),  
                            
                     ],),
                   ),
-                ),        
                 ),
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                    TextButton(
-                      onPressed: ()=> Get.to(const Daftar()), 
-                      child: const Text('Daftar', style: TextStyle(color: Colors.yellow),)
-                    ),
-                    // const Text(' | ', style: TextStyle(color: Colors.grey),),
-                    TextButton(
-                      onPressed: ()=> Get.to(const Forgot()), 
-                      child: const Text('Lupa Password ?', style: TextStyle(color: Colors.grey),)
-                    ),  
-                ],
-              ) 
-            ],
+            
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                      TextButton(
+                        onPressed: ()=> Get.to(const Daftar()), 
+                        child: const Text('Belum punya akun? Registrasi', style: TextStyle(color: Colors.white),)
+                      ),  
+                  ],
+                ) 
+              ],
+            ),
           ),
         ),
       ),
@@ -216,27 +229,41 @@ class _Login extends State<Login>{
     var data = {
       'email' : _email,
       'passwd' : _passwd
-    }; 
-    // print ('headers $headers');
-    // print ('data $data');
+    };  
 
     apiLogin.login( headers, jsonEncode(data) ).then((v) {
         bool? status = v!.status;
         String? msg = v.message;
         if(status == false){
-          snackAlert('Error',  '$msg');
+          // snackAlert('Error',  '$msg');
+          defaultDialogErr('$msg');
           setState(() { isLoad = false; }); 
           return;
         }
-        var data = v.data; 
+        var data = v.data!; 
         Sess sess = Sess();
-        sess.setSess('first_name', '${data!.firstName}');
-        sess.setSess('last_name', '${data.lastName}');
+        // sess.setSess('status_app', 'login');
+        // sess.setSess('serial', '${data.serial}');
+        // sess.setSess('namaLengkap', '${data.firstName}');  
+        // sess.setSess('email', '${data.email}');
+        // sess.setSess('phone', '${data.phone}');
+        // sess.setSess('ktp', '${data.noKtp}');
+        // sess.setSess('prov', '${data.prov}'); 
+        // sess.setSess('address', '${data.address}');
+        // sess.setSess('kelengkapan', '${data.kelengkapan}');
+        
+        sess.setSess('status_app', 'login');
+        sess.setSess('serial', '${data.serial}');
+        sess.setSess('namaLengkap', '${data.firstName}');  
         sess.setSess('email', '${data.email}');
         sess.setSess('phone', '${data.phone}');
+        sess.setSess('noktp', '${data.noKtp}');
         sess.setSess('prov', '${data.prov}'); 
         sess.setSess('address', '${data.address}');
-        Get.off(const MyHomePage()); 
+        sess.setSess('kelengkapan', '${data.kelengkapan}');
+        sess.setSess('pic', '${data.pic}');
+        sess.setSess('img_ktp', '${data.imgKtp}'); 
+        Get.offAll(  MyHomePage(serial:'${data.serial}',namaLengkap: '${data.firstName}', kelengkapan: '${data.kelengkapan}' ) ); 
     });  
   }
   

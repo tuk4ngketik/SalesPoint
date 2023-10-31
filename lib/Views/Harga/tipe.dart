@@ -69,53 +69,20 @@ class _CarType extends State<CarType>{
   List<String> kacaBelakang = [];
   List<String> kacaSamping = [];
   List<String> kacaSunRoof = [];
+  bool typeSelected = false;
 
   @override
   Widget build(BuildContext context){ 
-
-      // return DropdownButtonFormField<String>(  
-      //         menuMaxHeight: Get.height/2,    
-      //         decoration: const InputDecoration(    
-      //         contentPadding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-      //         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white30) ), 
-      //         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white24) ), 
-      //         border: OutlineInputBorder( 
-      //           borderRadius: BorderRadius.all(Radius.circular(10)),
-      //           gapPadding: 0,
-      //         ), 
-      //       ),
-      //       dropdownColor: Colors.blueGrey, 
-      //       style: const TextStyle(
-      //         color: Colors.white,  
-      //         fontWeight: FontWeight.bold,
-      //         letterSpacing: 1
-      //       ),   
-      //     hint: const Text('-- Pilih Tipe -- '),     
-      //     onChanged: (String? v) {  
-      //           // Clear Harga Kaca
-      //           _clearKaca();
-
-      //           // Set tipe
-      //             priceController.setTipe('$v');
-      //             print('Brand : ${priceController.brand} :: Tipe :  $v');   
-
-      //           // Set List Harga
-      //             _hargaByPosisi( 'Depan' );
-      //             _hargaByPosisi( 'Belakang' );
-      //             _hargaByPosisi( 'Samping' ); 
-      //             _hargaByPosisi( 'Sun Roof' );
-      //     }, 
-      //     items: widget.listTipe.map<DropdownMenuItem<String>>((String value){
-      //       return DropdownMenuItem<String>( value: value, child: Text(value), ); 
-      //     }).toList(), 
-      // ); 
+    
       return EasyAutocomplete(  
             controller: _type,
             decoration:   InputDecoration(   
-              suffixIcon:  ( _type.text.isNotEmpty)  ? IconButton(
+              // suffixIcon:  ( _type.text.isNotEmpty)  ? IconButton(
+              suffixIcon:  (typeSelected == true)  ? IconButton( 
                 onPressed: (){ 
                   _clearKaca();
-                  _type.clear();  
+                  _type.clear();   
+                  setState(() => typeSelected = false );
                 },
                 icon: const Icon(Icons.close),
               ) : null,   
@@ -129,6 +96,7 @@ class _CarType extends State<CarType>{
             ),
             suggestions:  widget.listTipe,
             onChanged: (value)  {
+              setState(() => typeSelected = true );
               _clearKaca() ; 
             },  
             onSubmitted: (v){    
@@ -178,23 +146,22 @@ class _CarType extends State<CarType>{
       }
       if( posisi ==  'Sun Roof'){ 
         priceController.set_kacaSunroof( data ); 
-      }
-
-      // v.data!.forEach((element) {
-      //   jenisKaca.add('${element.hargaJual}'); 
-      // });
-
-      // print('posisi $posisi $jenisKaca'); 
-
-    }); 
+      }  
+    })
+    .catchError((e) => snackError('Erroe Load Harga Mobil', '${e.msg}'));
   }
   
-  void _clearKaca(){ 
+  void _clearKaca(){  
     priceController.set_kacaDepan([]);
     priceController.set_kacaBelakang([]);
     priceController.set_kacaSamping([]);
-    priceController.set_kacaSunroof([]); 
-    priceController.clear_subTotal();
+    priceController.set_kacaSunroof([]);
+      priceController.set_nilaiKacaDepan(0);
+      priceController.set_nilaiKacaSamping(0);
+      priceController.set_nilaiKacaBelakang(0);
+      priceController.set_nilaiKacaSunroof(0);
+    priceController.clear_subTotal(); 
+    priceController.clear_total(); 
   }
 
 }//End

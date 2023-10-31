@@ -11,8 +11,7 @@ import 'dart:convert';
   import 'package:sales_point/Helper/rgx.dart';
   import 'package:sales_point/Helper/tanggal.dart';
   import 'package:sales_point/Views/verifikasi.dart';
-  import 'package:sales_point/Views/login.dart'; 
-  import 'package:sales_point/dondrawer.dart'; 
+  import 'package:sales_point/Views/login.dart';  
   import '../Cfg/css.dart';
   import '../Helper/wg.dart';
 
@@ -45,12 +44,13 @@ class _Daftar extends State<Daftar>{
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
     setState(() =>  _packageInfo = info ); 
-    _getDealer(); 
+    // _getDealer(); 
   }
   
   void initState() { 
-    super.initState();
-    // _initPackageInfo(); 
+      super.initState();
+      // sess.destroy(); // clear session
+      _initPackageInfo(); 
   }
  
   void dispose() {
@@ -62,7 +62,7 @@ class _Daftar extends State<Daftar>{
   Widget build(BuildContext context) {
     return Scaffold( 
       // backgroundColor: Colors.black,
-      drawer: const DonDrawer(),
+      // drawer: const DonDrawer(),
       
       body: Container(        
         decoration: const BoxDecoration(
@@ -98,7 +98,7 @@ class _Daftar extends State<Daftar>{
                           // NAma LEngkap 
                           TextFormField( 
                             style: const TextStyle(  fontWeight: FontWeight.bold),
-                            initialValue: 'Nama Saya',
+                            // initialValue: 'Nama Saya',
                              decoration:  InputDecoration(       
                               labelText: 'Nama Lengkap',     
                               hintText: 'Nama Lengkap',
@@ -156,10 +156,10 @@ class _Daftar extends State<Daftar>{
                           // No Handphone
                           TextFormField( 
                             style: const TextStyle(  fontWeight: FontWeight.bold),
-                            initialValue: '081812341234',
+                            // initialValue: '087784509065',
                              decoration:  InputDecoration(       
-                              labelText: 'No. HP',
-                              hintText: '08xx',    
+                              labelText: 'No. HP / Whatsapp',
+                              hintText: 'No.Hp / Whatsapp',    
                               border: Css.round20,      
                               enabledBorder:  Css.roundInput20, 
                               prefixIcon: const Icon(Icons.phone, color: Colors.black),
@@ -186,7 +186,7 @@ class _Daftar extends State<Daftar>{
                           // Email 
                           TextFormField( 
                             style: const TextStyle(  fontWeight: FontWeight.bold),
-                            initialValue: 'a@mail.com',
+                            // initialValue: 'tuk4ng.ketik@gmail.com',
                             onSaved:(newValue) => _email = newValue,
                             validator: (value) {
                               if(value!.isEmpty){
@@ -232,7 +232,7 @@ class _Daftar extends State<Daftar>{
                               border: Css.round20, 
                               enabledBorder:  Css.roundInput20, 
                               prefixIcon: const Icon(Icons.lock_open, color: Colors.black),
-                              hintText: ' - - -',  
+                              hintText: ' - - - - -',  
                               filled: true,
                               fillColor: Colors.black12,
                               suffixIcon: IconButton(
@@ -250,18 +250,18 @@ class _Daftar extends State<Daftar>{
                               
                           // Password Konfirm
                           TextFormField( 
-                            initialValue: 'qqqqqq',
+                            // initialValue: 'qqqqqq',
                             style: const TextStyle(  fontWeight: FontWeight.bold),  
-                            // obscureText: (visiblePass ==  false) ? true : false,
+                            obscureText: (visiblePass ==  false) ? true : false,
                             decoration:  InputDecoration(        
                               labelStyle: Css.labelStyle,
                               labelText: 'Konfirmasi Kata Sandi',   
                               border: Css.round20, 
                               enabledBorder:  Css.roundInput20, 
                               prefixIcon: const Icon(Icons.password, color: Colors.black),
-                              hintText: ' - - -',  
+                              hintText: ' - - - - -',  
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: Colors.black12,
                             ),
                             onSaved:(newValue) => _passwdKonfirm = newValue,
                             validator: (value) {
@@ -298,23 +298,17 @@ class _Daftar extends State<Daftar>{
                                     ),
                                   ),
                               )
-                            ),  
-                                  
-                            Flexible( 
-                              child: Row(  
-                                mainAxisSize: MainAxisSize.min,
-                                children: [ 
-                                  TextButton(
-                                    onPressed: ()=>Get.to(const Login()), 
-                                    child: const Text('Login', style: TextStyle(color: Colors.red, fontSize: 17),)
-                                  ),
-                                  TextButton(
-                                    onPressed: ()=>Get.to(const Verifikasi()), 
-                                    child: const Text('Verifikasi', style: TextStyle(color: Colors.red, fontSize: 17),)
-                                  ) 
-                                ],
-                              ),
-                            ) 
+                          ),
+                          br(10), 
+
+                          Center(
+                            child: TextButton.icon(
+                              onPressed: ()=>Get.to(const Login()), 
+                              icon: const Icon(Icons.login, color: Colors.red,), 
+                              label: const Text('Login', style: TextStyle(fontSize: 18, color: Colors.red),) 
+                            ),
+                          )
+                          
                       ],),
                     ),
                   ),
@@ -333,7 +327,7 @@ class _Daftar extends State<Daftar>{
     setState(() { isLoad = true; }); 
     String pckDate = base64.encode(utf8.encode( tgl.dmy() )); 
     String pckName = base64.encode(utf8.encode( _packageInfo.packageName));   
-    
+    print (' _packageInfo.packageName ${ _packageInfo.packageName}');
     var headers = {
       'pckname': pckName,
       'pckdate': pckDate,
@@ -352,7 +346,7 @@ class _Daftar extends State<Daftar>{
       // 'branch_serial' : branch_serial,
       // 'no_ktp' : no_ktp,
     }; 
-    // print ('headers $headers')   
+    print ('headers $headers');
 
     apiLogin.daftar( headers, jsonEncode(data) ).then((v) {
 
@@ -364,13 +358,8 @@ class _Daftar extends State<Daftar>{
           setState(() { isLoad = false; }); 
           return;
         }
-         
-        if(msg != 'sukses'){
-          // error is_unique 
-          setState(() { isLoad = false; }); 
-          return;
-        }       
- 
+        
+        // sess.setSess('serial', msg!);
         sess.setSess('status_app', 'register');
         sess.setSess('namaLengkap', nama_lengkap!);
         sess.setSess('email',  '$_email');
@@ -385,41 +374,33 @@ class _Daftar extends State<Daftar>{
   Map<String, String> mapCompanySerial = {}; // INsert from tb company_branch.cmpany_serial
   Map<String, String> mapBranchSerial  = {};    // INsert from tb company_branch.serial
 
-  // List of dealer
-  Future<void> _getDealer()async {
-    String pckDate = base64.encode(utf8.encode( tgl.dmy() )); 
-    String pckName = base64.encode(utf8.encode( _packageInfo.packageName));   
-    
-    var headers = {
-      'pckname': pckName,
-      'pckdate': pckDate,
-      'appversion':  _packageInfo.version, 
-      'targetpath': 'c2lzdGVtZ2FyYW5zaS5jb20vc2l0ZS9hcGk=',
-      'apikey': 'aUtvb2wtU2FsZXMtUG9pbnQ',  
-      'Content-Type': 'application/json'
-    };
-
-    apiLogin.dealerPartisipan(headers).then((value){
-      
-      bool? stat = value!.status;
-      if(stat == false){
-        return;
-      }
-
-      for (var element in value.data!) {
-        print('element  ${element.branchName}');
-        setState(() {
-          listBranchname.add('${element.branchName}');
-          mapBranch['${element.branchName}'] = '${element.kota}' ;
-          mapCompanySerial['${element.branchName}'] = '${element.companySerial}';
-          mapBranchSerial['${element.branchName}'] = '${element.serial}';
-        });
-      }
-
-      setState(() => msgAPiDealerpartisipasi = value.message );
-
-    });
-
-  }
+  // Future<void> _getDealer()async {
+    //   String pckDate = base64.encode(utf8.encode( tgl.dmy() )); 
+    //   String pckName = base64.encode(utf8.encode( _packageInfo.packageName));       
+    //   var headers = {
+    //     'pckname': pckName,
+    //     'pckdate': pckDate,
+    //     'appversion':  _packageInfo.version, 
+    //     'targetpath': 'c2lzdGVtZ2FyYW5zaS5jb20vc2l0ZS9hcGk=',
+    //     'apikey': 'aUtvb2wtU2FsZXMtUG9pbnQ',  
+    //     'Content-Type': 'application/json'
+    //   };
+    //   apiLogin.dealerPartisipan(headers).then((value){        
+    //     bool? stat = value!.status;
+    //     if(stat == false){
+    //       return;
+    //     }
+    //     for (var element in value.data!) {
+    //       print('element  ${element.branchName}');
+    //       setState(() {
+    //         listBranchname.add('${element.branchName}');
+    //         mapBranch['${element.branchName}'] = '${element.kota}' ;
+    //         mapCompanySerial['${element.branchName}'] = '${element.companySerial}';
+    //         mapBranchSerial['${element.branchName}'] = '${element.serial}';
+    //       });
+    //     }
+    //     setState(() => msgAPiDealerpartisipasi = value.message );
+    //   });
+  // }
 
 }
